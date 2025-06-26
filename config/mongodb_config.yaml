@@ -1,0 +1,5 @@
+connection_string: "mongodb://localhost:27017"
+database: leetcode
+problems_collection: problems
+embeddings_collection: embeddings
+scraping_progress_collection: scraping_progress

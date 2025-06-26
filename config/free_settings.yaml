@@ -1,0 +1,3 @@
+scraper:
+  request_delay_seconds: 2
+  max_retries: 3
