@@ -1,7 +1,5 @@
 # LeetCode Scraper Design Overview
 
-This README consolidates the high-level and low-level design documents for the zero-cost LeetCode scraper.
-
 ## High-Level Design
 
 This document outlines the architecture for a LeetCode scraping system designed to operate at zero cost while providing vector search capabilities. It summarizes the overall components and their interactions.
