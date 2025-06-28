@@ -2,29 +2,40 @@
 
 from pymongo import MongoClient
 from src.utils.settings import settings
+from typing import Union
+from pydantic import BaseModel
 
 mongo_client = None
 mongo_db = None
-problems_collection = None
 
 def init_mongo():
-    global mongo_client, mongo_db, problems_collection
+    global mongo_client, mongo_db
     mongo_client = MongoClient(settings.mongo_uri)
     mongo_db = mongo_client[settings.mongo_db_name]
-    problems_collection = mongo_db["problems"]
 
-def insert_problem(problem_doc: dict):
-    if problems_collection is None:
+def get_collection(collection_name: str):
+    if mongo_db is None:
         raise RuntimeError("MongoDB not initialized.")
-    if not problems_collection.find_one({"slug": problem_doc["slug"]}):
-        problems_collection.insert_one(problem_doc)
+    return mongo_db[collection_name]
 
-def get_problem_by_slug(slug: str):
-    if problems_collection is None:
-        raise RuntimeError("MongoDB not initialized.")
-    return problems_collection.find_one({"slug": slug})
+def insert_one(doc: Union[dict, BaseModel], collection_name: str):
+    collection = get_collection(collection_name)
+    doc_dict = doc.dict() if isinstance(doc, BaseModel) else doc
+    if not collection.find_one({"slug": doc_dict["slug"]}):
+        collection.insert_one(doc_dict)
 
-def update_problem(slug: str, updates: dict):
-    if problems_collection is None:
-        raise RuntimeError("MongoDB not initialized.")
-    problems_collection.update_one({"slug": slug}, {"$set": updates})
+def find_one(query: Union[dict, BaseModel], collection_name: str) -> dict | None:
+    collection = get_collection(collection_name)
+    query_dict = query.dict() if isinstance(query, BaseModel) else query
+    return collection.find_one(query_dict)
+
+def update_one(query: Union[dict, BaseModel], updates: Union[dict, BaseModel], collection_name: str):
+    collection = get_collection(collection_name)
+    query_dict = query.dict() if isinstance(query, BaseModel) else query
+    updates_dict = updates.dict() if isinstance(updates, BaseModel) else updates
+    collection.update_one(query_dict, {"$set": updates_dict})
+
+def delete_one(query: Union[dict, BaseModel], collection_name: str):
+    collection = get_collection(collection_name)
+    query_dict = query.dict() if isinstance(query, BaseModel) else query
+    collection.delete_one(query_dict)

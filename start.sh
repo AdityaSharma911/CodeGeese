@@ -2,7 +2,7 @@
 
 ENV_NAME="codegeese-env"
 REQUIREMENTS="requirements.txt"
-APP_ENTRY="../src.main:app"
+APP_ENTRY="src.main:app"
 
 echo -e "\n🧠 [CodeGeese] Starting Dev Environment..."
 

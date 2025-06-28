@@ -1,7 +1,8 @@
-pip install -r requirements.txt
-#create env
-python3 -m venv codegeese-env
-#change env
-source codegeese-env/bin/activate
-# Start server
-uvicorn src.main:app --reload --reload-dir src
+curl 'https://leetcode.com/graphql/' \
+  -H 'Content-Type: application/json' \
+  --data-raw '{
+    "query": "query getQuestionDetail($titleSlug: String!) { question(titleSlug: $titleSlug) { questionId title titleSlug difficulty content stats topicTags { name slug } codeSnippets { lang langSlug code } } }",
+    "variables": {
+      "titleSlug": "find-consistently-improving-employees"
+    }
+  }'
