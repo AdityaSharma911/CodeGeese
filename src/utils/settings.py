@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     qdrant_host: str
     qdrant_collection_name: str
     qdrant_api_key:str
+    leetcode_session:str
+    leetcode_csrf_token:str
 
     class Config:
         env_file = "src/.env"

@@ -3,7 +3,8 @@ from contextlib import asynccontextmanager
 from src.utils.settings import settings
 from src.service.vector_service import init_qdrant
 from src.service.mongo_service import init_mongo
-from src.controller.leetCodeProbListController import router as sync_problems
+from src.controller.problemsMetaController import router as sync_problems
+from src.controller.problemDetailsController import router as scrape_problem_details
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,6 +18,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(sync_problems)
+app.include_router(scrape_problem_details)
 
 @app.get("/")
 def read_root():

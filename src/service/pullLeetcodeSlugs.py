@@ -1,6 +1,6 @@
 import httpx
 from src.service.mongo_service import insert_one
-from src.model.problem import ProblemMeta
+from src.model.problemMetadata import ProblemMeta
 from src.service.mongo_service import init_mongo
 
 DIFFICULTY_MAP = {1: "Easy", 2: "Medium", 3: "Hard"}
