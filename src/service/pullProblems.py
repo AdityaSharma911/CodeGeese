@@ -2,8 +2,6 @@ import httpx
 import random
 import time
 from typing import Optional
-from stem import Signal
-from stem.control import Controller
 from src.service.mongo_service import mongo_client, get_collection, insert_one, find_one
 from src.model.problemDetails import ProblemDetail
 
@@ -18,24 +16,11 @@ USER_AGENTS = [
 LEETCODE_SESSION = ""
 CSRF_TOKEN = ""
 
-TOR_SOCKS_PROXY = "socks5h://127.0.0.1:9050"
-TOR_CONTROL_PORT = 9051
-
-def rotate_tor_ip():
-    try:
-        with Controller.from_port(port=TOR_CONTROL_PORT) as controller:
-            controller.authenticate()  # Uses default cookie auth
-            controller.signal(Signal.NEWNYM)
-            print("🔄 New Tor identity requested.")
-    except Exception as e:
-        print(f"❌ Failed to rotate IP: {e}")
-
 class LeetCodeClient:
     def __init__(self):
-        self.proxy = TOR_SOCKS_PROXY
         self.retry_limit = 3
         self.request_count = 0
-        self.rotation_frequency = 20  # Rotate IP every 20 requests
+        self.rotation_frequency = 20  # No longer used, but kept for logic compatibility
 
     def fetch_problem_detail(self, slug: str) -> Optional[dict]:
         query = {
@@ -62,16 +47,12 @@ class LeetCodeClient:
             try:
                 with httpx.Client(
                     headers=headers,
-                    proxy=self.proxy,
                     timeout=20
                 ) as client:
                     resp = client.post("https://leetcode.com/graphql/", json=query)
 
                 if resp.status_code == 200:
                     self.request_count += 1
-                    if self.request_count % self.rotation_frequency == 0:
-                        rotate_tor_ip()
-
                     return resp.json().get("data", {}).get("question")
 
                 elif resp.status_code == 403:
@@ -126,16 +107,3 @@ def pull_problem_dets():
             print(f"❌ Skipped: {slug}")
 
         time.sleep(random.uniform(2.5, 6))
-
-
-
-# Test if proxy is working
-def scrape_test():
-    client = LeetCodeClient()
-    data = client.fetch_problem_detail("two-sum")
-    if data:
-        print("✅ Fetched:", data["title"])
-    else:
-        print("❌ Failed to fetch")
-
-scrape_test()

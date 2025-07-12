@@ -5,6 +5,8 @@ from src.service.vector_service import init_qdrant
 from src.service.mongo_service import init_mongo
 from src.controller.problemsMetaController import router as sync_problems
 from src.controller.problemDetailsController import router as scrape_problem_details
+from src.controller.problemsSolutionController import router as solution_batch
+from src.model.problemDetails import CodeSnippet
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,6 +21,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(sync_problems)
 app.include_router(scrape_problem_details)
+app.include_router(solution_batch)
 
 @app.get("/")
 def read_root():
