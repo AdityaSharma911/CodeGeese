@@ -20,5 +20,5 @@ class ProblemDetail(BaseModel):
     tags: List[TopicTag]
     code_snippets: List[CodeSnippet]
     class Config:
-        orm_mode = True
+        from_attributes = True
         arbitrary_types_allowed = True

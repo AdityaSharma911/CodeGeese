@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     qdrant_api_key:str
     leetcode_session:str
     leetcode_csrf_token:str
+    GROQ_API_KEY:str
+    SOLUTIONS_ROOT:str
+    HF_TOKEN:str
+    OPENAI_API_KEY:str
 
     class Config:
         env_file = "src/.env"
